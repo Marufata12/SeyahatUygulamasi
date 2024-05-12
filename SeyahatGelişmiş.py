@@ -49,11 +49,11 @@ class Seyahat:
         self.connection.commit()
 
     def rotalari_getir(self):
-        self.cursor.execute("SELECT details FROM rotalar")
+        self.cursor.execute("SELECT id, details, seyahat_suresi FROM rotalar")
         return self.cursor.fetchall()
 
     def konaklamalari_getir(self):
-        self.cursor.execute("SELECT name, price FROM konaklamalar")
+        self.cursor.execute("SELECT id, name, price FROM konaklamalar")
         return self.cursor.fetchall()
 
     def seyahat_sil(self, rota):
@@ -86,7 +86,6 @@ class SeyahatPlanlamaApp(QWidget):
 
         self.detay_label = QLabel("Detay:")
         self.detay_input = QLineEdit()
-
         self.detay_ekle_button = QPushButton("Detay Ekle")
         self.detay_ekle_button.clicked.connect(self.detay_ekle)
 
@@ -198,14 +197,14 @@ class SeyahatPlanlamaApp(QWidget):
     def update_rota_list(self):
         self.rota_list.clear()
         rotalar = self.seyahat.rotalari_getir()
-        for details, duration in rotalar:
-            self.rota_list.addItem(QListWidgetItem(f"{details} - Süre: {duration} gün"))
+        for rota in rotalar:
+            self.rota_list.addItem(QListWidgetItem(f"{rota[1]} - Süre: {rota[2]} gün"))
 
     def update_konaklama_list(self):
         self.konaklama_list.clear()
         konaklamalar = self.seyahat.konaklamalari_getir()
-        for name, _ in konaklamalar:
-            self.konaklama_list.addItem(QListWidgetItem(name))
+        for konaklama in konaklamalar:
+            self.konaklama_list.addItem(QListWidgetItem(konaklama[1]))
 
     def rota_item_clicked(self, item):
         selected_rota = item.text().split(" - ")[0]
